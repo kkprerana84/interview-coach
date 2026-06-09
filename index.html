@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0053)file:///Users/prerana.deshmukh/Downloads/index_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Executive Interview Coach</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./index_files/css2" rel="stylesheet">
 <style>
 :root {
   --ink:#1a1916;--ink-soft:#4a4843;--ink-mute:#8a8780;
@@ -224,11 +224,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Company</label>
-          <input class="form-input" id="inp-company" placeholder="e.g. Google, Amazon…" oninput="checkSetup()"/>
+          <input class="form-input" id="inp-company" placeholder="e.g. Google, Amazon…" oninput="checkSetup()">
         </div>
         <div class="form-group">
           <label class="form-label">Role title</label>
-          <input class="form-input" id="inp-role" placeholder="e.g. Director of Analytics" oninput="checkSetup()"/>
+          <input class="form-input" id="inp-role" placeholder="e.g. Director of Analytics" oninput="checkSetup()">
         </div>
       </div>
 
@@ -260,7 +260,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
           <select class="form-select" id="inp-qcount">
             <option value="1">1 question</option>
             <option value="2">2 questions</option>
-            <option value="3" selected>3 questions</option>
+            <option value="3" selected="">3 questions</option>
             <option value="4">4 questions</option>
             <option value="5">5 questions</option>
           </select>
@@ -269,7 +269,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
 
       <div class="form-group">
         <label class="form-label">Interviewer details <span class="opt">(optional)</span></label>
-        <input class="form-input" id="inp-interviewer" placeholder="e.g. VP of Data, hiring manager, skip-level…"/>
+        <input class="form-input" id="inp-interviewer" placeholder="e.g. VP of Data, hiring manager, skip-level…">
       </div>
 
       <div class="form-group">
@@ -284,7 +284,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
         </div>
       </div>
 
-      <button class="mode-next-btn" id="setup-next-btn" onclick="goToMode()" disabled style="margin-top:1.5rem;">
+      <button class="mode-next-btn" id="setup-next-btn" onclick="goToMode()" disabled="" style="margin-top:1.5rem;">
         Continue →
       </button>
     </div>
@@ -298,12 +298,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
       <p class="setup-sub">A guided plan structures your prep over 1–2 weeks with AI practice and live coaching checkpoints. Self-drive lets you jump straight in.</p>
 
       <div class="mode-options">
-        <div class="mode-option" id="mode-guided" onclick="selectMode('guided')">
+        <div class="mode-option" id="mode-guided" onclick="selectMode(&#39;guided&#39;)">
           <div class="mode-icon">🗺</div>
           <div class="mode-title">Guided plan</div>
           <div class="mode-desc">AI builds a day-by-day prep schedule across your timeline — mixing practice questions, AI coaching, and live coaching sessions with a real expert.</div>
         </div>
-        <div class="mode-option" id="mode-self" onclick="selectMode('self')">
+        <div class="mode-option" id="mode-self" onclick="selectMode(&#39;self&#39;)">
           <div class="mode-icon">⚡</div>
           <div class="mode-title">Self-drive</div>
           <div class="mode-desc">Jump straight into practice. Pick your focus, answer questions, and get real-time AI feedback on each answer. No schedule, full control.</div>
@@ -315,7 +315,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
           <label class="form-label">Interview timeline</label>
           <select class="form-select" id="inp-timeline">
             <option value="1">1 week away</option>
-            <option value="2" selected>2 weeks away</option>
+            <option value="2" selected="">2 weeks away</option>
             <option value="3">3 weeks away</option>
             <option value="4">4 weeks away</option>
           </select>
@@ -324,14 +324,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
           <label class="form-label">Daily time available</label>
           <select class="form-select" id="inp-daily">
             <option value="15">15 min/day</option>
-            <option value="30" selected>30 min/day</option>
+            <option value="30" selected="">30 min/day</option>
             <option value="45">45 min/day</option>
             <option value="60">60+ min/day</option>
           </select>
         </div>
       </div>
 
-      <button class="mode-next-btn" id="mode-next-btn" onclick="confirmMode()" disabled>
+      <button class="mode-next-btn" id="mode-next-btn" onclick="confirmMode()" disabled="">
         Continue →
       </button>
     </div>
@@ -377,7 +377,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
     <div class="framework-hint hidden" id="framework-hint"></div>
 
     <div style="margin-bottom:1rem;">
-      <textarea class="answer-textarea" id="answer-ta" placeholder="Type your answer — or click 'Get AI coaching' for a framework and example opener…"></textarea>
+      <textarea class="answer-textarea" id="answer-ta" placeholder="Type your answer — or click &#39;Get AI coaching&#39; for a framework and example opener…"></textarea>
     </div>
 
     <div class="action-row">
@@ -415,13 +415,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
 </div>
 
 <script>
-const PREP_CTX = `You are an expert interview coach for senior data analytics and product leadership roles (Senior Manager, Director, VP, Head of) at top tech companies including Google, YouTube, Amazon, Meta, Uber, and Careem.
+const PREP_CTX = `You are an expert interview coach for senior data analytics and product leadership roles (Senior Manager, Director, VP, Head of) at top tech companies.
 
-Real-world experience to draw from: 15+ years analytics leadership, YouTube Trust & Safety (30-person team, APAC/EMEA/NA), fraud analytics at Careem/Uber (pre-auth project cut losses 80%, CS backlog 9k→0 in 8 weeks, 60% ticket automation), opex reduction (lead time 4 weeks→4 days), vertical BA re-org to POD model, VP-level stakeholder management, cross-functional leadership across product/engineering/policy/legal/vendor ops.
+COACHING PHILOSOPHY — HOW TO USE YOUR KNOWLEDGE:
+You have deep knowledge of real leadership situations drawn from senior analytics and product roles. Use this knowledge to inform the QUALITY and DEPTH of your coaching — but never reference specific companies, people, project names, or proprietary metrics in your responses. Your coaching should speak in themes, patterns, and frameworks that any senior leader could apply.
 
-Key frameworks: STAR with quantified outcomes, Product thinking (define customer→problem→metrics→options→prioritise→execute→risks), A/B testing (metric→hypothesis→design→analysis), metric investigations (data sanity→internal→external→scope), leadership (empathy-led, SMART goals in 3 buckets: company/personal growth/process).
+WHAT YOU KNOW (use as coaching intelligence, never quote directly):
+- How high-performing analytics teams are structured and scaled (from small specialist teams to 30+ person global orgs)
+- How fraud and trust & safety analytics work at scale — detection systems, metric trade-offs, policy enforcement pipelines
+- How to drive cross-functional influence across product, engineering, policy, legal, and vendor operations
+- How to navigate org redesigns — moving from vertical to pod models, managing redundancy and transition
+- How to reduce operational drag — cutting reporting latency, automating manual workflows, rebuilding backlogs
+- How pre-authorization, chargeback management, and payment fraud controls work in practice
+- How to build executive-level business cases with clear ROI framing
+- What VP and Director-level interviews actually test — and what separates good answers from great ones
 
-Seniority bar (Director+): org-level thinking, managing 10-50+ people, VP-level influence, strategic tradeoffs, executive communication, managing ambiguity, org design.`;
+COACHING STYLE:
+- Speak in universal leadership principles, not specific anecdotes
+- Use phrases like "a strong answer here would show...", "at Director level, interviewers want to see...", "the pattern that works well is..."
+- When giving examples, invent plausible generic scenarios (e.g. "imagine you led a team restructure at a mid-size tech company...") rather than referencing real situations
+- Always connect feedback to the seniority level — what's acceptable at manager level is insufficient at Director/VP
+
+KEY FRAMEWORKS TO REFERENCE IN COACHING:
+- STAR with quantified outcomes and org-level impact
+- Product thinking: define customer → problem → metrics → options → prioritise → execute → risks
+- A/B testing: metric definition → hypothesis → design → statistical analysis
+- Metric investigation: data sanity → internal factors → external factors → scope & segment
+- Leadership goal-setting: 3 buckets — company-aligned projects, personal growth goals, process improvement
+- Org design thinking: span of control, specialisation vs generalisation, build vs buy vs borrow
+
+SENIORITY BAR (Director+):
+- Org-level thinking, not individual contributor thinking
+- Managing teams of 10-50+ people across functions or geographies
+- VP-level stakeholder influence and executive communication
+- Strategic tradeoffs, managing ambiguity, leading through change
+- Answers should demonstrate you've owned outcomes, not just contributed to them`;
 
 let S = {
   company:'', role:'', level:'', fn:'', interviewer:'',
@@ -900,5 +928,6 @@ function resetAll(){
   show('screen-setup');
 }
 </script>
-</body>
-</html>
+
+
+</body></html>

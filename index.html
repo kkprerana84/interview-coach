@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Interview Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1a1916;--ink-soft:#4a4843;--ink-mute:#8a8780;
+  --paper:#f7f5f0;--paper-warm:#ede9e0;--paper-mid:#e0dbd0;
+  --gold:#b8924a;--gold-light:#d4ad72;--gold-pale:#f0e6d0;
+  --teal:#2a7a6a;--teal-pale:#e0f0ec;
+  --blue:#2a5a8a;--blue-pale:#e0eaf5;
+  --border:rgba(26,25,22,0.12);--radius:4px;--radius-lg:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6;}
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+.hidden{display:none!important;}
+
+/* SIDEBAR */
+.sidebar{background:var(--ink);color:var(--paper);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1.5rem;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);letter-spacing:.01em;line-height:1.2;}
+.logo span{display:block;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-top:4px;}
+.sb-section{border-top:.5px solid rgba(255,255,255,.1);padding-top:1.25rem;}
+.sb-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:.75rem;}
+.info-chip{margin-bottom:8px;}
+.info-chip-label{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.info-chip-value{font-size:13px;color:var(--paper);}
+.q-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.q-item{font-size:12px;color:var(--ink-mute);padding:7px 10px;border-radius:var(--radius);border:.5px solid transparent;cursor:pointer;transition:all .15s;line-height:1.4;display:flex;gap:8px;align-items:flex-start;}
+.q-item:hover{background:rgba(255,255,255,.05);color:var(--paper);}
+.q-item.active{background:rgba(184,146,74,.15);border-color:rgba(184,146,74,.3);color:var(--gold-light);}
+.q-item.done{color:rgba(255,255,255,.4);}
+.q-item.coaching-item{color:rgba(212,173,114,.7);font-style:italic;}
+.q-num{font-size:10px;font-weight:500;color:var(--gold);min-width:16px;margin-top:1px;}
+.new-session-btn{margin-top:auto;padding:10px 16px;background:transparent;border:.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;letter-spacing:.03em;}
+.new-session-btn:hover{border-color:var(--gold);color:var(--gold-light);}
+
+/* PLAN TRACKER in sidebar */
+.plan-day{margin-bottom:10px;}
+.plan-day-label{font-size:10px;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.plan-day-items{display:flex;flex-direction:column;gap:3px;}
+.plan-task{font-size:11px;padding:5px 8px;border-radius:var(--radius);border:.5px solid transparent;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;}
+.plan-task.pt-practice{background:rgba(184,146,74,.08);color:rgba(212,173,114,.8);border-color:rgba(184,146,74,.15);}
+.plan-task.pt-coaching{background:rgba(42,90,138,.12);color:rgba(100,160,220,.8);border-color:rgba(42,90,138,.2);}
+.plan-task.pt-done{opacity:.45;text-decoration:line-through;}
+.plan-task.pt-active{border-color:var(--gold)!important;color:var(--gold-light)!important;}
+.plan-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.pt-practice .plan-dot{background:var(--gold);}
+.pt-coaching .plan-dot{background:#5ba3dc;}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;min-height:100vh;overflow-y:auto;}
+
+/* ── SCREEN 1: SETUP ── */
+.setup-screen{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:3rem 2rem;}
+.setup-card{width:100%;max-width:580px;}
+.setup-eyebrow{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.setup-title{font-family:'DM Serif Display',serif;font-size:36px;line-height:1.15;color:var(--ink);margin-bottom:.5rem;}
+.setup-title em{font-style:italic;color:var(--gold);}
+.setup-sub{font-size:14px;color:var(--ink-soft);margin-bottom:2rem;line-height:1.6;}
+.form-group{margin-bottom:1.25rem;}
+.form-label{display:block;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px;}
+.form-label .opt{font-weight:300;color:var(--ink-mute);text-transform:none;letter-spacing:0;}
+.form-input,.form-select{width:100%;padding:12px 14px;background:white;border:.5px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .15s;appearance:none;}
+.form-input:focus,.form-select:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--ink-mute);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.cat-chip{padding:9px 10px;border:.5px solid var(--border);border-radius:var(--radius);background:white;font-size:12px;color:var(--ink-soft);cursor:pointer;transition:all .15s;text-align:center;user-select:none;}
+.cat-chip:hover{border-color:var(--gold);color:var(--gold);}
+.cat-chip.selected{background:var(--gold-pale);border-color:var(--gold);color:var(--gold);font-weight:500;}
+
+/* ── SCREEN 2: MODE CHOOSER ── */
+.mode-screen{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;}
+.mode-card{width:100%;max-width:580px;}
+.mode-options{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:2rem 0;}
+.mode-option{border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;cursor:pointer;transition:all .2s;background:white;text-align:left;}
+.mode-option:hover{border-color:var(--gold);transform:translateY(-2px);}
+.mode-option.selected{border-color:var(--gold);background:var(--gold-pale);}
+.mode-icon{font-size:24px;margin-bottom:.75rem;}
+.mode-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:.4rem;color:var(--ink);}
+.mode-desc{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.mode-next-btn{width:100%;padding:15px 24px;background:var(--ink);color:var(--paper);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+.mode-next-btn:hover{background:var(--gold);}
+.mode-next-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--ink);}
+
+/* ── SCREEN 3: GUIDED PLAN ── */
+.plan-screen{flex:1;padding:2.5rem 3rem;max-width:760px;margin:0 auto;width:100%;}
+.plan-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:.5px solid var(--border);}
+.plan-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);margin-bottom:.4rem;}
+.plan-subtitle{font-size:14px;color:var(--ink-soft);}
+.timeline-track{display:flex;flex-direction:column;gap:0;}
+.week-block{margin-bottom:2rem;}
+.week-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.week-label::after{content:'';flex:1;height:.5px;background:var(--border);}
+.day-row{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;}
+.day-label{font-size:11px;font-weight:500;color:var(--ink-mute);min-width:36px;margin-top:10px;}
+.day-tasks{display:flex;flex-direction:column;gap:8px;flex:1;}
+.plan-task-card{padding:12px 14px;border-radius:var(--radius-lg);border:.5px solid;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all .15s;}
+.plan-task-card.practice-card{background:var(--gold-pale);border-color:rgba(184,146,74,.3);}
+.plan-task-card.coaching-card{background:var(--blue-pale);border-color:rgba(42,90,138,.2);}
+.plan-task-card.review-card{background:var(--teal-pale);border-color:rgba(42,122,106,.2);}
+.plan-task-card.completed{opacity:.5;}
+.plan-task-card:hover{transform:translateX(3px);}
+.task-icon{font-size:18px;margin-top:1px;flex-shrink:0;}
+.task-body{flex:1;}
+.task-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.task-desc{font-size:12px;color:var(--ink-soft);line-height:1.4;}
+.task-meta{font-size:11px;color:var(--ink-mute);margin-top:4px;}
+.task-cta{padding:6px 12px;border-radius:var(--radius);font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;margin-top:2px;transition:all .15s;}
+.practice-cta{background:var(--gold);color:white;}
+.practice-cta:hover{background:#9a7838;}
+.coaching-cta{background:var(--blue);color:white;}
+.coaching-cta:hover{background:#1e4570;}
+.review-cta{background:var(--teal);color:white;}
+.review-cta:hover{background:#1e5a4a;}
+.task-check{width:18px;height:18px;border-radius:50%;border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px;cursor:pointer;background:white;}
+.task-check.checked{background:var(--teal);border-color:var(--teal);color:white;}
+.plan-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:2rem;}
+.plan-stat{background:white;border:.5px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;text-align:center;}
+.plan-stat-val{font-family:'DM Serif Display',serif;font-size:24px;color:var(--gold);}
+.plan-stat-label{font-size:11px;color:var(--ink-mute);margin-top:2px;}
+.start-plan-btn{display:block;width:100%;padding:14px;background:var(--ink);color:white;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;text-align:center;transition:background .2s;margin-top:1rem;letter-spacing:.03em;}
+.start-plan-btn:hover{background:var(--gold);}
+
+/* ── SCREEN 4: INTERVIEW ── */
+.interview-screen{flex:1;display:flex;flex-direction:column;padding:2.5rem 3rem;max-width:780px;margin:0 auto;width:100%;}
+.interview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:.5px solid var(--border);}
+.q-counter{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);}
+.q-counter span{color:var(--gold);font-size:13px;}
+.progress-bar{width:160px;height:2px;background:var(--paper-mid);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;}
+.category-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:var(--gold-pale);color:var(--gold);border:.5px solid rgba(184,146,74,.3);}
+.question-block{margin-bottom:2rem;}
+.question-eyebrow{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:.75rem;}
+.question-text{font-family:'DM Serif Display',serif;font-size:24px;line-height:1.4;color:var(--ink);margin-bottom:1rem;}
+.question-context{font-size:13px;color:var(--ink-soft);background:var(--paper-warm);border-left:2px solid var(--gold);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;line-height:1.6;}
+.answer-textarea{width:100%;min-height:180px;padding:16px;background:white;border:.5px solid var(--border);border-radius:var(--radius-lg);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);resize:vertical;outline:none;transition:border-color .15s;line-height:1.7;}
+.answer-textarea:focus{border-color:var(--gold);}
+.answer-textarea::placeholder{color:var(--ink-mute);font-style:italic;}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0 1.5rem;}
+.btn{padding:10px 18px;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:.5px solid;letter-spacing:.02em;}
+.btn-primary{background:var(--ink);color:white;border-color:var(--ink);}
+.btn-primary:hover{background:var(--gold);border-color:var(--gold);}
+.btn-secondary{background:white;color:var(--ink-soft);border-color:var(--border);}
+.btn-secondary:hover{border-color:var(--ink-soft);color:var(--ink);}
+.btn-ghost{background:transparent;color:var(--ink-mute);border-color:transparent;}
+.btn-ghost:hover{color:var(--ink);background:var(--paper-warm);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.framework-hint{background:var(--teal-pale);border:.5px solid rgba(42,122,106,.2);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--teal);margin-bottom:1.5rem;line-height:1.6;}
+.framework-hint strong{font-weight:500;}
+.feedback-block{background:white;border:.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;}
+.feedback-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--paper-warm);border-bottom:.5px solid var(--border);}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite;}
+.ai-dot.done{animation:none;background:var(--teal);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.feedback-label{font-size:12px;font-weight:500;color:var(--ink-soft);letter-spacing:.03em;}
+.feedback-body{padding:16px;}
+.feedback-text{font-size:14px;color:var(--ink);line-height:1.75;white-space:pre-wrap;}
+.completion-note{background:var(--paper-warm);border:.5px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;margin-top:1rem;}
+.completion-note h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:.5rem;color:var(--ink);}
+.completion-note p{font-size:13px;color:var(--ink-soft);}
+
+/* COACHING INTERSTITIAL */
+.coaching-screen{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;}
+.coaching-card{width:100%;max-width:520px;background:var(--blue-pale);border:1px solid rgba(42,90,138,.2);border-radius:12px;padding:2.5rem;text-align:center;}
+.coaching-badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;background:var(--blue);color:white;border-radius:2px;margin-bottom:1.25rem;}
+.coaching-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--ink);margin-bottom:.75rem;}
+.coaching-body{font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:1.5rem;}
+.coaching-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem;}
+.slot-card{background:white;border:.5px solid var(--border);border-radius:var(--radius-lg);padding:10px 8px;font-size:12px;color:var(--ink-soft);cursor:pointer;transition:all .15s;text-align:center;}
+.slot-card:hover{border-color:var(--blue);color:var(--blue);}
+.slot-time{font-weight:500;color:var(--ink);display:block;margin-bottom:2px;}
+.coaching-actions{display:flex;gap:10px;justify-content:center;}
+
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.5;}40%{transform:scale(1.2);opacity:1;}}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--paper-mid);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">Executive<br>Interview Coach<span>For senior data &amp; product leaders</span></div>
+
+  <div class="sb-section hidden" id="sb-session">
+    <div class="sb-label">Session</div>
+    <div class="info-chip"><div class="info-chip-label">Company</div><div class="info-chip-value" id="sb-company">—</div></div>
+    <div class="info-chip"><div class="info-chip-label">Role</div><div class="info-chip-value" id="sb-role">—</div></div>
+    <div class="info-chip"><div class="info-chip-label">Mode</div><div class="info-chip-value" id="sb-mode">—</div></div>
+  </div>
+
+  <div class="sb-section hidden" id="sb-questions">
+    <div class="sb-label">Questions</div>
+    <ul class="q-list" id="q-list"></ul>
+  </div>
+
+  <div class="sb-section hidden" id="sb-plan">
+    <div class="sb-label">Prep plan</div>
+    <div id="sb-plan-items"></div>
+  </div>
+
+  <button class="new-session-btn" onclick="resetAll()">↺ New session</button>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- SCREEN 1: SETUP -->
+  <div class="setup-screen" id="screen-setup">
+    <div class="setup-card">
+      <div class="setup-eyebrow">AI-powered prep</div>
+      <h1 class="setup-title">Prepare like a<br><em>senior leader</em></h1>
+      <p class="setup-sub">Tailored questions from real Director, VP &amp; Head-of interviews at Google, Amazon, Meta, Uber and more. Built for data &amp; product leadership roles.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Company</label>
+          <input class="form-input" id="inp-company" placeholder="e.g. Google, Amazon…" oninput="checkSetup()"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role title</label>
+          <input class="form-input" id="inp-role" placeholder="e.g. Director of Analytics" oninput="checkSetup()"/>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Level</label>
+          <select class="form-select" id="inp-level" onchange="checkSetup()">
+            <option value="">Level…</option>
+            <option>Senior Manager</option>
+            <option>Manager of Managers</option>
+            <option>Director</option>
+            <option>Senior Director</option>
+            <option>VP / Head of</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Function</label>
+          <select class="form-select" id="inp-function" onchange="checkSetup()">
+            <option value="">Function…</option>
+            <option>Data Analytics</option>
+            <option>Data Science / ML</option>
+            <option>Product Management</option>
+            <option>Trust &amp; Safety</option>
+            <option>Product Analytics</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Questions per session</label>
+          <select class="form-select" id="inp-qcount">
+            <option value="1">1 question</option>
+            <option value="2">2 questions</option>
+            <option value="3" selected>3 questions</option>
+            <option value="4">4 questions</option>
+            <option value="5">5 questions</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Interviewer details <span class="opt">(optional)</span></label>
+        <input class="form-input" id="inp-interviewer" placeholder="e.g. VP of Data, hiring manager, skip-level…"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Focus areas <span class="opt">(pick 1–3)</span></label>
+        <div class="category-grid">
+          <div class="cat-chip" data-cat="Leadership &amp; org design" onclick="toggleCat(this)">Leadership</div>
+          <div class="cat-chip" data-cat="Strategy &amp; stakeholders" onclick="toggleCat(this)">Strategy</div>
+          <div class="cat-chip" data-cat="Data &amp; analytics" onclick="toggleCat(this)">Analytics</div>
+          <div class="cat-chip" data-cat="Product thinking" onclick="toggleCat(this)">Product</div>
+          <div class="cat-chip" data-cat="Trust &amp; Safety" onclick="toggleCat(this)">Trust &amp; Safety</div>
+          <div class="cat-chip" data-cat="Behavioral / STAR" onclick="toggleCat(this)">Behavioral</div>
+        </div>
+      </div>
+
+      <button class="mode-next-btn" id="setup-next-btn" onclick="goToMode()" disabled style="margin-top:1.5rem;">
+        Continue →
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: MODE CHOOSER -->
+  <div class="mode-screen hidden" id="screen-mode">
+    <div class="mode-card">
+      <div class="setup-eyebrow">How would you like to prep?</div>
+      <h2 class="setup-title" style="font-size:28px;">Choose your<br><em>approach</em></h2>
+      <p class="setup-sub">A guided plan structures your prep over 1–2 weeks with AI practice and live coaching checkpoints. Self-drive lets you jump straight in.</p>
+
+      <div class="mode-options">
+        <div class="mode-option" id="mode-guided" onclick="selectMode('guided')">
+          <div class="mode-icon">🗺</div>
+          <div class="mode-title">Guided plan</div>
+          <div class="mode-desc">AI builds a day-by-day prep schedule across your timeline — mixing practice questions, AI coaching, and live coaching sessions with a real expert.</div>
+        </div>
+        <div class="mode-option" id="mode-self" onclick="selectMode('self')">
+          <div class="mode-icon">⚡</div>
+          <div class="mode-title">Self-drive</div>
+          <div class="mode-desc">Jump straight into practice. Pick your focus, answer questions, and get real-time AI feedback on each answer. No schedule, full control.</div>
+        </div>
+      </div>
+
+      <div id="guided-timeline-row" class="form-row hidden" style="margin-bottom:1.25rem;">
+        <div class="form-group">
+          <label class="form-label">Interview timeline</label>
+          <select class="form-select" id="inp-timeline">
+            <option value="1">1 week away</option>
+            <option value="2" selected>2 weeks away</option>
+            <option value="3">3 weeks away</option>
+            <option value="4">4 weeks away</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Daily time available</label>
+          <select class="form-select" id="inp-daily">
+            <option value="15">15 min/day</option>
+            <option value="30" selected>30 min/day</option>
+            <option value="45">45 min/day</option>
+            <option value="60">60+ min/day</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="mode-next-btn" id="mode-next-btn" onclick="confirmMode()" disabled>
+        Continue →
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: GUIDED PLAN -->
+  <div class="plan-screen hidden" id="screen-plan">
+    <div class="plan-header">
+      <h2 class="plan-title" id="plan-title">Your prep plan</h2>
+      <p class="plan-subtitle" id="plan-subtitle">Personalised for your interview timeline</p>
+    </div>
+
+    <div class="plan-summary">
+      <div class="plan-stat"><div class="plan-stat-val" id="ps-days">—</div><div class="plan-stat-label">Prep days</div></div>
+      <div class="plan-stat"><div class="plan-stat-val" id="ps-practice">—</div><div class="plan-stat-label">AI practice sessions</div></div>
+      <div class="plan-stat"><div class="plan-stat-val" id="ps-coaching">—</div><div class="plan-stat-label">Live coaching calls</div></div>
+    </div>
+
+    <div class="timeline-track" id="plan-timeline"></div>
+
+    <button class="start-plan-btn" onclick="startPlanSession()">Start Day 1 →</button>
+  </div>
+
+  <!-- SCREEN 4: INTERVIEW -->
+  <div class="interview-screen hidden" id="screen-interview">
+    <div class="interview-header">
+      <div>
+        <div class="q-counter">Question <span id="q-num">1</span> of <span id="q-total">3</span></div>
+        <div id="q-phase-label" style="font-size:11px;color:var(--ink-mute);margin-top:2px;"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="category-tag" id="q-cat-tag">Leadership</span>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="question-eyebrow">Interview question</div>
+      <div class="question-text" id="q-text">Loading…</div>
+      <div class="question-context hidden" id="q-context"></div>
+    </div>
+
+    <div class="framework-hint hidden" id="framework-hint"></div>
+
+    <div style="margin-bottom:1rem;">
+      <textarea class="answer-textarea" id="answer-ta" placeholder="Type your answer — or click 'Get AI coaching' for a framework and example opener…"></textarea>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-primary" id="feedback-btn" onclick="getAIFeedback()">Get AI coaching</button>
+      <button class="btn btn-secondary" onclick="showFramework()">Framework hint</button>
+      <button class="btn btn-ghost" id="next-btn" onclick="nextQuestion()">Skip →</button>
+    </div>
+
+    <div class="feedback-block hidden" id="feedback-block">
+      <div class="feedback-header">
+        <div class="ai-dot" id="ai-dot"></div>
+        <div class="feedback-label" id="feedback-label">Coach is thinking…</div>
+      </div>
+      <div class="feedback-body"><div class="feedback-text" id="feedback-text"></div></div>
+    </div>
+
+    <div class="completion-note hidden" id="completion-note"></div>
+  </div>
+
+  <!-- SCREEN 5: LIVE COACHING INTERSTITIAL -->
+  <div class="coaching-screen hidden" id="screen-coaching">
+    <div class="coaching-card">
+      <div class="coaching-badge">Live coaching session</div>
+      <h2 class="coaching-title">Time to practice<br>with a real expert</h2>
+      <p class="coaching-body" id="coaching-body-text">You've completed your AI practice for this phase. A 45-minute session with a senior data or product leader will help you pressure-test your answers and sharpen your stories before the real interview.</p>
+      <div class="coaching-slots" id="coaching-slots"></div>
+      <div class="coaching-actions">
+        <button class="btn btn-primary" onclick="bookCoaching()">Book a session →</button>
+        <button class="btn btn-secondary" onclick="skipCoaching()">Skip for now</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+const PREP_CTX = `You are an expert interview coach for senior data analytics and product leadership roles (Senior Manager, Director, VP, Head of) at top tech companies including Google, YouTube, Amazon, Meta, Uber, and Careem.
+
+Real-world experience to draw from: 15+ years analytics leadership, YouTube Trust & Safety (30-person team, APAC/EMEA/NA), fraud analytics at Careem/Uber (pre-auth project cut losses 80%, CS backlog 9k→0 in 8 weeks, 60% ticket automation), opex reduction (lead time 4 weeks→4 days), vertical BA re-org to POD model, VP-level stakeholder management, cross-functional leadership across product/engineering/policy/legal/vendor ops.
+
+Key frameworks: STAR with quantified outcomes, Product thinking (define customer→problem→metrics→options→prioritise→execute→risks), A/B testing (metric→hypothesis→design→analysis), metric investigations (data sanity→internal→external→scope), leadership (empathy-led, SMART goals in 3 buckets: company/personal growth/process).
+
+Seniority bar (Director+): org-level thinking, managing 10-50+ people, VP-level influence, strategic tradeoffs, executive communication, managing ambiguity, org design.`;
+
+let S = {
+  company:'', role:'', level:'', fn:'', interviewer:'',
+  categories:[], qCount:3, mode:'', timeline:2, daily:30,
+  questions:[], currentIndex:0, answered:[],
+  plan:[], planDay:0, planTaskIndex:0,
+  fromPlan:false
+};
+
+// ── SETUP ──
+function checkSetup(){
+  const ok = document.getElementById('inp-company').value.trim() &&
+             document.getElementById('inp-role').value.trim() &&
+             document.getElementById('inp-level').value &&
+             document.getElementById('inp-function').value;
+  document.getElementById('setup-next-btn').disabled = !ok;
+}
+
+function toggleCat(el){
+  const sel = document.querySelectorAll('.cat-chip.selected');
+  if(el.classList.contains('selected')){ el.classList.remove('selected'); return; }
+  if(sel.length >= 3) sel[0].classList.remove('selected');
+  el.classList.add('selected');
+}
+
+function goToMode(){
+  S.company    = document.getElementById('inp-company').value.trim();
+  S.role       = document.getElementById('inp-role').value.trim();
+  S.level      = document.getElementById('inp-level').value;
+  S.fn         = document.getElementById('inp-function').value;
+  S.qCount     = parseInt(document.getElementById('inp-qcount').value);
+  S.interviewer= document.getElementById('inp-interviewer').value.trim();
+  S.categories = [...document.querySelectorAll('.cat-chip.selected')].map(e=>e.dataset.cat);
+  if(!S.categories.length) S.categories=['Leadership & org design','Strategy & stakeholders','Behavioral / STAR'];
+  show('screen-mode');
+}
+
+// ── MODE ──
+function selectMode(m){
+  S.mode = m;
+  document.getElementById('mode-guided').classList.toggle('selected', m==='guided');
+  document.getElementById('mode-self').classList.toggle('selected', m==='self');
+  document.getElementById('guided-timeline-row').classList.toggle('hidden', m!=='guided');
+  document.getElementById('mode-next-btn').disabled = false;
+}
+
+async function confirmMode(){
+  if(S.mode==='guided'){
+    S.timeline = parseInt(document.getElementById('inp-timeline').value);
+    S.daily    = parseInt(document.getElementById('inp-daily').value);
+    buildPlan();
+    show('screen-plan');
+    updateSidebarSession();
+  } else {
+    updateSidebarSession();
+    await startInterview();
+  }
+}
+
+// ── GUIDED PLAN ──
+function buildPlan(){
+  const weeks = S.timeline;
+  const totalDays = weeks * 5; // weekdays only
+  // Determine coaching checkpoints based on timeline
+  const coachingDays = weeks === 1 ? [3] : weeks === 2 ? [4, 9] : weeks === 3 ? [5, 10, 14] : [5, 10, 15, 19];
+  const cats = S.categories;
+  let plan = [];
+  let practiceCount = 0, coachingCount = 0;
+
+  const themes = [
+    { label:'Leadership fundamentals', cat: cats[0] || 'Leadership & org design' },
+    { label:'Strategy & stakeholder influence', cat: cats[1] || 'Strategy & stakeholders' },
+    { label:'Analytical depth & data decisions', cat: cats[2] || 'Data & analytics' },
+    { label:'Product & cross-functional thinking', cat: cats[0] || 'Leadership & org design' },
+    { label:'Behavioral deep-dive (STAR)', cat: 'Behavioral / STAR' },
+    { label:'Executive communication & vision', cat: cats[1] || 'Strategy & stakeholders' },
+    { label:'Org design & team building', cat: cats[0] || 'Leadership & org design' },
+    { label:'Final mock & story bank review', cat: 'Behavioral / STAR' }
+  ];
+
+  for(let d = 1; d <= totalDays; d++){
+    const isCoaching = coachingDays.includes(d);
+    const themeIdx = Math.floor((d-1) / Math.ceil(totalDays / themes.length));
+    const theme = themes[Math.min(themeIdx, themes.length-1)];
+    const dayTasks = [];
+
+    if(isCoaching){
+      coachingCount++;
+      dayTasks.push({
+        type:'coaching', d,
+        title:'Live coaching session',
+        desc:`45-min 1:1 with a senior ${S.fn} leader. Focus: pressure-testing your stories and refining your executive framing.`,
+        meta:'45 min · Live video call',
+        done:false
+      });
+    } else {
+      practiceCount++;
+      dayTasks.push({
+        type:'practice', d,
+        title:`Practice: ${theme.label}`,
+        desc:`${S.qCount} AI-generated question${S.qCount>1?'s':''} calibrated for ${S.level} at ${S.company}, with real-time coaching feedback.`,
+        meta:`~${S.qCount * 10} min · ${theme.cat}`,
+        cat: theme.cat,
+        done:false
+      });
+      if(S.daily >= 30 && d === Math.floor(totalDays/2)){
+        dayTasks.push({
+          type:'review', d,
+          title:'Story bank review',
+          desc:'Revisit your strongest STAR answers, tighten the metrics, and ensure each story maps to a leadership competency.',
+          meta:'~15 min · Self-guided',
+          done:false
+        });
+      }
+    }
+    plan.push({ day: d, tasks: dayTasks });
+  }
+
+  S.plan = plan;
+
+  // Update stats
+  document.getElementById('ps-days').textContent = totalDays;
+  document.getElementById('ps-practice').textContent = practiceCount;
+  document.getElementById('ps-coaching').textContent = coachingCount;
+  document.getElementById('plan-title').textContent = `Your ${weeks}-week prep plan`;
+  document.getElementById('plan-subtitle').textContent = `${S.role} at ${S.company} · ${S.level}`;
+
+  renderPlanTimeline();
+  renderSidebarPlan();
+}
+
+function renderPlanTimeline(){
+  const container = document.getElementById('plan-timeline');
+  container.innerHTML = '';
+  const weeks = S.timeline;
+
+  for(let w = 1; w <= weeks; w++){
+    const wDiv = document.createElement('div');
+    wDiv.className = 'week-block';
+    wDiv.innerHTML = `<div class="week-label">Week ${w}</div>`;
+    const daysThisWeek = S.plan.filter(p => p.day > (w-1)*5 && p.day <= w*5);
+    daysThisWeek.forEach(dayObj => {
+      const dayNames = ['Mon','Tue','Wed','Thu','Fri'];
+      const dayName = dayNames[(dayObj.day-1) % 5];
+      const row = document.createElement('div');
+      row.className = 'day-row';
+      row.innerHTML = `<div class="day-label">${dayName}</div><div class="day-tasks" id="day-${dayObj.day}"></div>`;
+      wDiv.appendChild(row);
+      const tasksContainer = row.querySelector('.day-tasks');
+      dayObj.tasks.forEach((task, ti) => {
+        tasksContainer.appendChild(makeTaskCard(task, dayObj.day, ti));
+      });
+    });
+    container.appendChild(wDiv);
+  }
+}
+
+function makeTaskCard(task, day, ti){
+  const card = document.createElement('div');
+  card.className = `plan-task-card ${task.type}-card${task.done?' completed':''}`;
+  card.id = `ptask-${day}-${ti}`;
+  const ctaClass = `${task.type}-cta task-cta`;
+  const ctaLabel = task.type==='practice' ? 'Start practice →' : task.type==='coaching' ? 'Book session →' : 'Begin review →';
+  const ctaFn = task.type==='practice' ? `startPracticeTask(${day},${ti})` : task.type==='coaching' ? `showCoachingScreen(${day},${ti})` : `startReviewTask(${day},${ti})`;
+  const icon = task.type==='practice' ? '🧠' : task.type==='coaching' ? '🎯' : '📋';
+  card.innerHTML = `
+    <div class="task-check${task.done?' checked':''}" onclick="toggleTaskDone(${day},${ti})">${task.done?'✓':''}</div>
+    <div class="task-icon">${icon}</div>
+    <div class="task-body">
+      <div class="task-title">${task.title}</div>
+      <div class="task-desc">${task.desc}</div>
+      <div class="task-meta">${task.meta}</div>
+    </div>
+    ${!task.done ? `<button class="${ctaClass}" onclick="${ctaFn}">${ctaLabel}</button>` : ''}
+  `;
+  return card;
+}
+
+function toggleTaskDone(day, ti){
+  const dayObj = S.plan.find(p=>p.day===day);
+  if(!dayObj) return;
+  dayObj.tasks[ti].done = !dayObj.tasks[ti].done;
+  renderPlanTimeline();
+  renderSidebarPlan();
+}
+
+function renderSidebarPlan(){
+  const container = document.getElementById('sb-plan-items');
+  container.innerHTML = '';
+  const next5 = S.plan.slice(0, Math.min(5, S.plan.length));
+  next5.forEach(dayObj => {
+    dayObj.tasks.forEach(task => {
+      const el = document.createElement('div');
+      el.className = `plan-task pt-${task.type}${task.done?' pt-done':''}`;
+      el.innerHTML = `<span class="plan-dot"></span>${task.title.replace('Practice: ','')}`;
+      container.appendChild(el);
+    });
+  });
+  document.getElementById('sb-plan').classList.remove('hidden');
+}
+
+async function startPracticeTask(day, ti){
+  const dayObj = S.plan.find(p=>p.day===day);
+  const task = dayObj.tasks[ti];
+  S.categories = [task.cat];
+  S.fromPlan = true;
+  S.planDay = day;
+  S.planTaskIndex = ti;
+  await startInterview();
+}
+
+function startReviewTask(day, ti){
+  alert('Story bank review: Open your notes and revisit your top 3 STAR stories. Ensure each has a specific metric outcome and maps to a leadership competency expected at ' + S.level + ' level.');
+  toggleTaskDone(day, ti);
+}
+
+function startPlanSession(){
+  // Find first incomplete task
+  for(const dayObj of S.plan){
+    for(let ti=0; ti<dayObj.tasks.length; ti++){
+      const t = dayObj.tasks[ti];
+      if(!t.done){
+        if(t.type==='practice') startPracticeTask(dayObj.day, ti);
+        else if(t.type==='coaching') showCoachingScreen(dayObj.day, ti);
+        else startReviewTask(dayObj.day, ti);
+        return;
+      }
+    }
+  }
+}
+
+// ── COACHING SCREEN ──
+function showCoachingScreen(day, ti){
+  const times = ['Mon 10am','Mon 2pm','Tue 9am','Wed 11am','Thu 3pm','Fri 10am'];
+  const slots = document.getElementById('coaching-slots');
+  slots.innerHTML = times.map(t=>`<div class="slot-card"><span class="slot-time">${t}</span>45 min</div>`).join('');
+  document.getElementById('coaching-body-text').textContent =
+    `This 45-minute live session with a senior ${S.fn} leader will pressure-test your answers for your ${S.role} interview at ${S.company}. They'll probe like a real interviewer and help you tighten your executive narrative.`;
+  S.planDay = day;
+  S.planTaskIndex = ti;
+  show('screen-coaching');
+}
+
+function bookCoaching(){
+  alert('In the full product, this connects to a real booking system with vetted coaches. For now, mark this as scheduled and continue your prep!');
+  if(S.fromPlan || S.planDay > 0){
+    toggleTaskDone(S.planDay, S.planTaskIndex);
+    show('screen-plan');
+  } else {
+    show('screen-plan');
+  }
+}
+
+function skipCoaching(){
+  if(S.planDay > 0){
+    show('screen-plan');
+  } else if(S.mode==='self'){
+    show('screen-mode');
+  } else {
+    show('screen-plan');
+  }
+}
+
+// ── INTERVIEW ──
+async function startInterview(){
+  document.getElementById('setup-next-btn').textContent='Generating questions…';
+  S.questions = [];
+  S.currentIndex = 0;
+  S.answered = [];
+  await generateQuestions();
+  show('screen-interview');
+  updateSidebarSession();
+  renderQuestion();
+}
+
+async function generateQuestions(){
+  const prompt = `Generate ${S.qCount} interview questions for:
+- Company: ${S.company}
+- Role: ${S.role} (${S.level})
+- Function: ${S.fn}
+- Interviewer: ${S.interviewer||'not specified'}
+- Focus: ${S.categories.join(', ')}
+
+Requirements:
+- Calibrated for ${S.level} at ${S.company} — not generic
+- Each question covers a different focus area
+- Substantive and pressure-testing — this is a competitive senior role
+
+Respond ONLY with a JSON array of exactly ${S.qCount} objects. No preamble, no markdown.
+[{"question":"...","category":"...","context":"Why this is asked at this level","framework":"How a great answer is structured"}]`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    S.questions = JSON.parse(raw);
+  } catch(e){
+    // Fallback
+    S.questions = Array.from({length:S.qCount},(_,i)=>({
+      question:['Walk me through how you have built and scaled an analytics function. What were the pivotal org design decisions?',
+        `${S.company} is under pressure to demonstrate ROI from its data investments. How would you build the business case in your first 90 days?`,
+        'Tell me about the most difficult people decision you have had to make as a leader — restructuring a team or exiting a senior person.',
+        'How do you prevent your team from becoming a report factory and shift toward proactive, strategic insight generation?',
+        'Describe a time a key initiative you championed significantly underperformed. What did you learn?'][i]||'Tell me about a time you led through ambiguity at scale.',
+      category:S.categories[i%S.categories.length]||'Leadership & org design',
+      context:'Calibrated for '+S.level+' at '+S.company,
+      framework:'STAR with org-level framing and quantified outcomes'
+    }));
+  }
+}
+
+function renderQuestion(){
+  const q = S.questions[S.currentIndex];
+  if(!q) return;
+  const total = S.questions.length;
+  document.getElementById('q-num').textContent = S.currentIndex+1;
+  document.getElementById('q-total').textContent = total;
+  document.getElementById('q-text').textContent = q.question;
+  document.getElementById('q-cat-tag').textContent = q.category;
+  document.getElementById('q-phase-label').textContent = `${S.role} · ${S.company}`;
+  const ctx = document.getElementById('q-context');
+  if(q.context){ ctx.textContent=q.context; ctx.classList.remove('hidden'); }
+  else ctx.classList.add('hidden');
+  document.getElementById('progress-fill').style.width = (S.currentIndex/total*100)+'%';
+  document.getElementById('answer-ta').value='';
+  document.getElementById('feedback-block').classList.add('hidden');
+  document.getElementById('framework-hint').classList.add('hidden');
+  document.getElementById('completion-note').classList.add('hidden');
+  document.getElementById('feedback-btn').disabled=false;
+  document.getElementById('feedback-btn').textContent='Get AI coaching';
+  document.getElementById('next-btn').textContent = S.currentIndex===total-1 ? 'Finish →' : 'Skip →';
+  updateSidebarQ();
+}
+
+function updateSidebarQ(){
+  const list = document.getElementById('q-list');
+  list.innerHTML='';
+  S.questions.forEach((q,i)=>{
+    const li=document.createElement('li');
+    li.className='q-item'+(i===S.currentIndex?' active':'')+(S.answered.includes(i)?' done':'');
+    li.innerHTML=`<span class="q-num">${i+1}</span><span>${q.question.length>52?q.question.slice(0,52)+'…':q.question}</span>`;
+    li.onclick=()=>{S.currentIndex=i;renderQuestion();};
+    list.appendChild(li);
+  });
+  document.getElementById('sb-questions').classList.remove('hidden');
+}
+
+function showFramework(){
+  const q=S.questions[S.currentIndex];
+  if(!q) return;
+  const h=document.getElementById('framework-hint');
+  h.innerHTML=`<strong>Framework:</strong> ${q.framework}`;
+  h.classList.remove('hidden');
+}
+
+async function getAIFeedback(){
+  const q=S.questions[S.currentIndex];
+  const answer=document.getElementById('answer-ta').value.trim();
+  const btn=document.getElementById('feedback-btn');
+  btn.disabled=true;
+  btn.textContent='Coaching…';
+  const block=document.getElementById('feedback-block');
+  const dot=document.getElementById('ai-dot');
+  const label=document.getElementById('feedback-label');
+  const text=document.getElementById('feedback-text');
+  block.classList.remove('hidden');
+  dot.className='ai-dot';
+  label.textContent='Coach is reviewing…';
+  text.textContent='';
+
+  const hasAnswer=answer.length>20;
+  const coachPrompt=hasAnswer
+    ?`Candidate: ${S.role} (${S.level}) at ${S.company}, ${S.fn}.\nQuestion: "${q.question}"\nAnswer: "${answer}"\n\nGive direct coaching. Use exactly these sections:\nWHAT WORKS:\nWHAT'S MISSING:\nELEVATE IT:\nWATCH OUT:\n\n150-200 words. Sharp and specific to ${S.level} at ${S.company}.`
+    :`Candidate: ${S.role} (${S.level}) at ${S.company}, ${S.fn}.\nQuestion: "${q.question}"\n\nThey haven't answered yet. Give prep coaching:\nWHAT THIS IS REALLY TESTING:\nHOW TO STRUCTURE A GREAT ANSWER:\nWHAT DISTINGUISHES A ${S.level.toUpperCase()} ANSWER:\nEXAMPLE OPENER:\n\n150 words max.`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:coachPrompt}]})});
+    const data=await res.json();
+    text.textContent=data.content.map(b=>b.text||'').join('');
+    dot.className='ai-dot done';
+    label.textContent='Coaching complete';
+    btn.textContent='Refresh feedback';
+    btn.disabled=false;
+    if(!S.answered.includes(S.currentIndex)) S.answered.push(S.currentIndex);
+    updateSidebarQ();
+  } catch(e){
+    text.textContent='Unable to connect. Please check your connection and try again.';
+    dot.className='ai-dot done';
+    label.textContent='Connection error';
+    btn.textContent='Try again';
+    btn.disabled=false;
+  }
+}
+
+function nextQuestion(){
+  if(!S.answered.includes(S.currentIndex)) S.answered.push(S.currentIndex);
+  if(S.currentIndex >= S.questions.length-1){
+    showSessionComplete();
+    return;
+  }
+  S.currentIndex++;
+  renderQuestion();
+}
+
+function showSessionComplete(){
+  document.getElementById('q-text').textContent='Session complete';
+  document.getElementById('q-context').classList.add('hidden');
+  document.getElementById('answer-ta').style.display='none';
+  document.querySelectorAll('.action-row .btn').forEach(b=>b.style.display='none');
+  document.getElementById('framework-hint').classList.add('hidden');
+  document.getElementById('progress-fill').style.width='100%';
+
+  let html=`<h3>Session complete</h3><p>You practised ${S.answered.length} of ${S.questions.length} questions for your ${S.role} interview at ${S.company}.</p>`;
+
+  if(S.fromPlan){
+    // Mark plan task as done and offer to return
+    toggleTaskDone(S.planDay, S.planTaskIndex);
+    html+=`<p style="margin-top:8px;">This session is marked complete in your plan.</p>
+    <button class="btn btn-primary" style="margin-top:1.25rem;" onclick="returnToPlan()">Back to prep plan →</button>`;
+  } else {
+    html+=`<button class="btn btn-primary" style="margin-top:1.25rem;" onclick="resetAll()">New session →</button>`;
+  }
+
+  const note=document.getElementById('completion-note');
+  note.innerHTML=html;
+  note.classList.remove('hidden');
+}
+
+function returnToPlan(){
+  S.fromPlan=false;
+  document.getElementById('answer-ta').style.display='';
+  document.querySelectorAll('.action-row .btn').forEach(b=>b.style.display='');
+  show('screen-plan');
+  renderPlanTimeline();
+}
+
+// ── SIDEBAR SESSION INFO ──
+function updateSidebarSession(){
+  document.getElementById('sb-company').textContent=S.company;
+  document.getElementById('sb-role').textContent=S.role;
+  document.getElementById('sb-mode').textContent=S.mode==='guided'?'Guided plan':'Self-drive';
+  document.getElementById('sb-session').classList.remove('hidden');
+}
+
+// ── HELPERS ──
+function show(id){
+  ['screen-setup','screen-mode','screen-plan','screen-interview','screen-coaching'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+  // For setup, re-enable the button text
+  if(id==='screen-setup') document.getElementById('setup-next-btn').textContent='Continue →';
+}
+
+function resetAll(){
+  S={company:'',role:'',level:'',fn:'',interviewer:'',categories:[],qCount:3,mode:'',timeline:2,daily:30,questions:[],currentIndex:0,answered:[],plan:[],planDay:0,planTaskIndex:0,fromPlan:false};
+  document.getElementById('inp-company').value='';
+  document.getElementById('inp-role').value='';
+  document.getElementById('inp-level').value='';
+  document.getElementById('inp-function').value='';
+  document.getElementById('inp-interviewer').value='';
+  document.getElementById('inp-qcount').value='3';
+  document.querySelectorAll('.cat-chip.selected').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('mode-guided').classList.remove('selected');
+  document.getElementById('mode-self').classList.remove('selected');
+  document.getElementById('mode-next-btn').disabled=true;
+  document.getElementById('setup-next-btn').disabled=true;
+  document.getElementById('sb-session').classList.add('hidden');
+  document.getElementById('sb-questions').classList.add('hidden');
+  document.getElementById('sb-plan').classList.add('hidden');
+  document.getElementById('answer-ta').style.display='';
+  document.querySelectorAll('.action-row .btn').forEach(b=>b.style.display='');
+  show('screen-setup');
+}
+</script>
+</body>
+</html>

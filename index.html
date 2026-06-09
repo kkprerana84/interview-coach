@@ -717,7 +717,7 @@ Respond ONLY with a JSON array of exactly ${S.qCount} objects. No preamble, no m
     const res = await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:prompt}]})
     });
     const data = await res.json();
     const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
@@ -802,7 +802,7 @@ async function getAIFeedback(){
     :`Candidate: ${S.role} (${S.level}) at ${S.company}, ${S.fn}.\nQuestion: "${q.question}"\n\nThey haven't answered yet. Give prep coaching:\nWHAT THIS IS REALLY TESTING:\nHOW TO STRUCTURE A GREAT ANSWER:\nWHAT DISTINGUISHES A ${S.level.toUpperCase()} ANSWER:\nEXAMPLE OPENER:\n\n150 words max.`;
 
   try {
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:coachPrompt}]})});
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:coachPrompt}]})});
     const data=await res.json();
     text.textContent=data.content.map(b=>b.text||'').join('');
     dot.className='ai-dot done';

@@ -414,8 +414,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
 </main>
 </div>
 
+<script src="./supabase.js"></script>
 <script>
-const PREP_CTX = `You are an expert interview coach for senior data analytics and product leadership roles (Senior Manager, Director, VP, Head of) at top tech companies.
+// Bundled fallback — used if Supabase knowledge_bases table is unreachable
+const PREP_CTX_FALLBACK = `You are an expert interview coach for senior data analytics and product leadership roles (Senior Manager, Director, VP, Head of) at top tech companies.
 
 COACHING PHILOSOPHY — HOW TO USE YOUR KNOWLEDGE:
 You have deep knowledge of real leadership situations drawn from senior analytics and product roles. Use this knowledge to inform the QUALITY and DEPTH of your coaching — but never reference specific companies, people, project names, or proprietary metrics in your responses. Your coaching should speak in themes, patterns, and frameworks that any senior leader could apply.
@@ -450,6 +452,13 @@ SENIORITY BAR (Director+):
 - VP-level stakeholder influence and executive communication
 - Strategic tradeoffs, managing ambiguity, leading through change
 - Answers should demonstrate you've owned outcomes, not just contributed to them`;
+
+// Active system prompt — replaced with Supabase content on first generateQuestions() call
+let PREP_CTX = PREP_CTX_FALLBACK;
+(async () => {
+  const remote = await fetchSystemPrompt();
+  if (remote) PREP_CTX = remote;
+})();
 
 let S = {
   company:'', role:'', level:'', fn:'', interviewer:'',
@@ -726,7 +735,14 @@ async function startInterview(){
 }
 
 async function generateQuestions(){
-  const prompt = `Generate ${S.qCount} interview questions for:
+  // 1 — Try curated Supabase bank first
+  const curated = await fetchQuestions(S.categories, S.level, S.qCount, S.company);
+  S.questions = curated.slice(0, S.qCount);
+
+  // 2 — If the bank didn't have enough, fill the rest with Claude
+  const needed = S.qCount - S.questions.length;
+  if (needed > 0) {
+    const prompt = `Generate ${needed} interview questions for:
 - Company: ${S.company}
 - Role: ${S.role} (${S.level})
 - Function: ${S.fn}
@@ -738,30 +754,37 @@ Requirements:
 - Each question covers a different focus area
 - Substantive and pressure-testing — this is a competitive senior role
 
-Respond ONLY with a JSON array of exactly ${S.qCount} objects. No preamble, no markdown.
+Respond ONLY with a JSON array of exactly ${needed} objects. No preamble, no markdown.
 [{"question":"...","category":"...","context":"Why this is asked at this level","framework":"How a great answer is structured"}]`;
 
-  try {
-    const res = await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
-    const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
-    S.questions = JSON.parse(raw);
-  } catch(e){
-    // Fallback
-    S.questions = Array.from({length:S.qCount},(_,i)=>({
-      question:['Walk me through how you have built and scaled an analytics function. What were the pivotal org design decisions?',
+    try {
+      const res = await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:PREP_CTX,messages:[{role:'user',content:prompt}]})
+      });
+      const data = await res.json();
+      const raw = data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+      S.questions = [...S.questions, ...JSON.parse(raw)];
+    } catch(e){
+      // Hard fallback questions
+      const fallbacks = [
+        'Walk me through how you have built and scaled an analytics function. What were the pivotal org design decisions?',
         `${S.company} is under pressure to demonstrate ROI from its data investments. How would you build the business case in your first 90 days?`,
-        'Tell me about the most difficult people decision you have had to make as a leader — restructuring a team or exiting a senior person.',
-        'How do you prevent your team from becoming a report factory and shift toward proactive, strategic insight generation?',
-        'Describe a time a key initiative you championed significantly underperformed. What did you learn?'][i]||'Tell me about a time you led through ambiguity at scale.',
-      category:S.categories[i%S.categories.length]||'Leadership & org design',
-      context:'Calibrated for '+S.level+' at '+S.company,
-      framework:'STAR with org-level framing and quantified outcomes'
-    }));
+        'Tell me about the most difficult people decision you have made as a leader.',
+        'How do you prevent your team from becoming a report factory?',
+        'Describe a time a key initiative you championed significantly underperformed. What did you learn?',
+      ];
+      S.questions = [
+        ...S.questions,
+        ...Array.from({length:needed},(_,i)=>({
+          question: fallbacks[i] || 'Tell me about a time you led through ambiguity at scale.',
+          category: S.categories[i%S.categories.length]||'Leadership & org design',
+          context:  'Calibrated for '+S.level+' at '+S.company,
+          framework:'STAR with org-level framing and quantified outcomes'
+        }))
+      ];
+    }
   }
 }
 
@@ -859,6 +882,7 @@ function nextQuestion(){
 }
 
 function showSessionComplete(){
+  saveSession(S); // persist to Supabase (fire-and-forget)
   document.getElementById('q-text').textContent='Session complete';
   document.getElementById('q-context').classList.add('hidden');
   document.getElementById('answer-ta').style.display='none';

@@ -2,7 +2,7 @@
 // Replace the two constants below with your project's values:
 //   Supabase Dashboard → Settings → API → Project URL & anon/public key
 
-const SUPABASE_URL  = 'https://jilixkvzzxfgctvryrw.supabase.co';
+const SUPABASE_URL  = 'https://jillixkvzzxfgctvryrw.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_Qwdosc14AL5K-viSPPwQwg_57lF-yOu';
 
 async function sbFetch(path, opts = {}) {

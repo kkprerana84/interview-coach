@@ -664,6 +664,7 @@ async function startPracticeTask(day, ti){
   const dayObj = S.plan.find(p=>p.day===day);
   const task = dayObj.tasks[ti];
   S.categories = [task.cat];
+  S.qCount = 3;
   S.fromPlan = true;
   S.planDay = day;
   S.planTaskIndex = ti;

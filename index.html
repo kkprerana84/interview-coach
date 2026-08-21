@@ -725,7 +725,9 @@ function skipCoaching(){
 
 // ── INTERVIEW ──
 async function startInterview(){
-  document.getElementById('setup-next-btn').textContent='Generating questions…';
+  if(!S.qCount || isNaN(S.qCount)) S.qCount = 3;
+  const nextBtn = document.getElementById('setup-next-btn');
+  if(nextBtn) nextBtn.textContent = 'Generating questions…';
   S.questions = [];
   S.currentIndex = 0;
   S.answered = [];

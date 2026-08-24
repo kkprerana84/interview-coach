@@ -57,6 +57,7 @@ window.fetchQuestions = async function(categories, level, limit, company) {
         });
         // Add level and company as raw strings (PostgREST operators)
         const url = `${SUPABASE_URL}/rest/v1/questions?${params}&level=in.(${encodeURIComponent(level)},Any)&${companyFilter}`;
+        console.log('[DEBUG] loop url:', url);
         const res = await fetch(url, {
           headers: {
             'apikey': SUPABASE_ANON,

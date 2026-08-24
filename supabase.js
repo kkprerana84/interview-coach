@@ -50,17 +50,27 @@ window.fetchQuestions = async function(categories, level, limit, company) {
     // 1 — Company-specific questions (skip if "Other" or empty)
     if (company && company !== 'Other') {
       const path = buildQuery('questions', { ...base, company: `eq.${company}` }, `limit=${limit}`);
-      console.log('[DEBUG] Supabase company query:', `${SUPABASE_URL}/rest/v1/${path}`);
-      results = await sbFetch(path);
-      console.log('[DEBUG] company results:', results);
+      console.log('[DEBUG] Supabase company path:', path);
+      try {
+        results = await sbFetch(path);
+        console.log('[DEBUG] company results:', results);
+      } catch(err) {
+        console.log('[DEBUG] company fetch error:', err.message);
+      }
     }
 
     // 2 — Fill remaining slots with generic questions (null company)
     const remaining = limit - results.length;
     if (remaining > 0) {
       const path = buildQuery('questions', { ...base, company: 'is.null' }, `limit=${remaining}`);
-      const generic = await sbFetch(path);
-      results = [...results, ...generic];
+      console.log('[DEBUG] Supabase generic path:', path);
+      try {
+        const generic = await sbFetch(path);
+        console.log('[DEBUG] generic results:', generic);
+        results = [...results, ...generic];
+      } catch(err) {
+        console.log('[DEBUG] generic fetch error:', err.message);
+      }
     }
 
     return results;

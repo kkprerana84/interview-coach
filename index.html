@@ -282,13 +282,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
       <div class="form-group">
         <label class="form-label">Focus areas <span class="opt">(pick 1–3)</span></label>
         <div class="category-grid">
-          <div class="cat-chip" data-cat="Leadership & org design" onclick="toggleCat(this)">Leadership</div>
-          <div class="cat-chip" data-cat="Strategy & stakeholders" onclick="toggleCat(this)">Strategy</div>
-          <div class="cat-chip" data-cat="Data & analytics strategy" onclick="toggleCat(this)">Analytics</div>
-          <div class="cat-chip" data-cat="Product & cross-functional" onclick="toggleCat(this)">Product</div>
-          <div class="cat-chip" data-cat="Metrics & experimentation" onclick="toggleCat(this)">Metrics</div>
-          <div class="cat-chip" data-cat="Behavioral / STAR" onclick="toggleCat(this)">Behavioral</div>
-          <div class="cat-chip" data-cat="Technical & execution" onclick="toggleCat(this)">Technical</div>
+          <div class="cat-chip" data-cat="Leadership and org design" onclick="toggleCat(this)">Leadership</div>
+          <div class="cat-chip" data-cat="Strategy and stakeholders" onclick="toggleCat(this)">Strategy</div>
+          <div class="cat-chip" data-cat="Data and analytics strategy" onclick="toggleCat(this)">Analytics</div>
+          <div class="cat-chip" data-cat="Product and cross-functional" onclick="toggleCat(this)">Product</div>
+          <div class="cat-chip" data-cat="Metrics and experimentation" onclick="toggleCat(this)">Metrics</div>
+          <div class="cat-chip" data-cat="Behavioral and STAR" onclick="toggleCat(this)">Behavioral</div>
+          <div class="cat-chip" data-cat="Technical and execution" onclick="toggleCat(this)">Technical</div>
         </div>
       </div>
 
@@ -500,7 +500,7 @@ function goToMode(){
   S.qCount     = parseInt(document.getElementById('inp-qcount').value);
   S.interviewer= document.getElementById('inp-interviewer').value.trim();
   S.categories = [...document.querySelectorAll('.cat-chip.selected')].map(e=>e.dataset.cat);
-  if(!S.categories.length) S.categories=['Leadership & org design','Strategy & stakeholders','Behavioral / STAR'];
+  if(!S.categories.length) S.categories=['Leadership and org design','Strategy and stakeholders','Behavioral and STAR'];
   show('screen-mode');
 }
 

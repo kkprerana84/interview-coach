@@ -49,14 +49,9 @@ window.fetchQuestions = async function(categories, level, limit, company) {
       const perCat = Math.ceil(rowLimit / categories.length);
       for (const cat of categories) {
         if (allResults.length >= rowLimit) break;
-        const params = new URLSearchParams({
-          select: 'id,question,category,context,framework,company',
-          active: 'eq.true',
-          category: `eq.${cat}`,
-          limit: String(perCat),
-        });
-        // Add level and company as raw strings (PostgREST operators)
-        const url = `${SUPABASE_URL}/rest/v1/questions?${params}&level=in.(${encodeURIComponent(level)},Any)&${companyFilter}`;
+        const encodedCat = encodeURIComponent(cat);
+        const encodedLevel = encodeURIComponent(level);
+        const url = `${SUPABASE_URL}/rest/v1/questions?select=id,question,category,context,framework,company&active=eq.true&category=eq.${encodedCat}&level=in.(${encodedLevel},Any)&${companyFilter}&limit=${perCat}`;
         console.log('[DEBUG] loop url:', url);
         const res = await fetch(url, {
           headers: {

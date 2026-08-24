@@ -39,8 +39,8 @@ window.fetchQuestions = async function(categories, level, limit, company) {
   console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
     // Build query params as a plain string — Supabase REST needs unencoded filter operators
-    const catList = categories.map(c => `"${c}"`).join(',');
-    const levelList = `"${level}","Any"`;
+    const catList = categories.join(',');
+    const levelList = `${level},Any`;
 
     async function queryQuestions(companyFilter, rowLimit) {
       const params = [

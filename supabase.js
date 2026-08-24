@@ -36,7 +36,6 @@ window.fetchCategories = async function() {
  */
 window.fetchQuestions = async function(categories, level, limit, company) {
   limit = limit || 3;
-  console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
     // Build query params as a plain string — Supabase REST needs unencoded filter operators
     // Use individual eq params for each category — avoids in.() space/encoding issues
@@ -52,7 +51,6 @@ window.fetchQuestions = async function(categories, level, limit, company) {
         const encodedCat = encodeURIComponent(cat);
         const encodedLevel = encodeURIComponent(level);
         const url = `${SUPABASE_URL}/rest/v1/questions?select=id,question,category,context,framework,company&active=eq.true&category=eq.${encodedCat}&level=in.(${encodedLevel},Any)&${companyFilter}&limit=${perCat}`;
-        console.log('[DEBUG] loop url:', url);
         const res = await fetch(url, {
           headers: {
             'apikey': SUPABASE_ANON,
@@ -73,7 +71,6 @@ window.fetchQuestions = async function(categories, level, limit, company) {
     if (company && company !== 'Other') {
       try {
         results = await queryQuestions(`company=eq.${company}`, limit);
-        console.log('[DEBUG] company results:', results);
       } catch(err) {
         console.log('[DEBUG] company fetch error:', err.message);
       }
@@ -84,7 +81,6 @@ window.fetchQuestions = async function(categories, level, limit, company) {
     if (remaining > 0) {
       try {
         const generic = await queryQuestions('company=is.null', remaining);
-        console.log('[DEBUG] generic results:', generic);
         results = [...results, ...generic];
       } catch(err) {
         console.log('[DEBUG] generic fetch error:', err.message);

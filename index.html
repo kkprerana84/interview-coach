@@ -756,10 +756,8 @@ async function startInterview(){
 }
 
 async function generateQuestions(){
-  console.log('[DEBUG] generateQuestions called', {categories: S.categories, level: S.level, qCount: S.qCount, company: S.company});
   // 1 — Try curated Supabase bank first
   const curated = await fetchQuestions(S.categories, S.level, S.qCount, S.company);
-  console.log('[DEBUG] curated questions from Supabase:', curated);
   S.questions = curated.slice(0, S.qCount);
 
   // 2 — If the bank didn't have enough, fill the rest with Claude

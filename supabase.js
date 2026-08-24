@@ -38,20 +38,22 @@ window.fetchQuestions = async function(categories, level, limit, company) {
   limit = limit || 3;
   console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
-    const catFilter = categories.map(c => `"${c.replace(/&/g, '%26')}"`).join(',');
-    console.log('[DEBUG] catFilter:', catFilter);
+    // Build category filter as individual eq conditions joined with or()
+    const catOr = categories.map(c => `category.eq.${c}`).join(',');
+    const levelOr = `level.eq.${level},level.eq.Any`;
     const base = {
-      select:   'id,question,category,context,framework,company',
-      active:   'eq.true',
-      level:    `in.(${encodeURIComponent(level)},Any)`,
-      category: `in.(${catFilter})`,
+      select: 'id,question,category,context,framework,company',
+      active: 'eq.true',
+      or:     `(${levelOr})`,
     };
+    const catParam = `or=(${catOr})`;
+    console.log('[DEBUG] catOr:', catOr, 'levelOr:', levelOr);
 
     let results = [];
 
     // 1 — Company-specific questions (skip if "Other" or empty)
     if (company && company !== 'Other') {
-      const path = buildQuery('questions', { ...base, company: `eq.${company}` }, `limit=${limit}`);
+      const path = buildQuery('questions', { ...base, company: `eq.${company}` }, `${catParam}&limit=${limit}`);
       console.log('[DEBUG] Supabase company path:', path);
       try {
         results = await sbFetch(path);
@@ -64,7 +66,7 @@ window.fetchQuestions = async function(categories, level, limit, company) {
     // 2 — Fill remaining slots with generic questions (null company)
     const remaining = limit - results.length;
     if (remaining > 0) {
-      const path = buildQuery('questions', { ...base, company: 'is.null' }, `limit=${remaining}`);
+      const path = buildQuery('questions', { ...base, company: 'is.null' }, `${catParam}&limit=${remaining}`);
       console.log('[DEBUG] Supabase generic path:', path);
       try {
         const generic = await sbFetch(path);

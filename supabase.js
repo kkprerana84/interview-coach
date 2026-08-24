@@ -1,7 +1,3 @@
-// Supabase client for Interview Coach
-// Replace the two constants below with your project's values:
-//   Supabase Dashboard → Settings → API → Project URL & anon/public key
-
 const SUPABASE_URL  = 'https://jillixkvzzxfgctvryrw.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_Qwdosc14AL5K-viSPPwQwg_57lF-yOu';
 
@@ -23,54 +19,47 @@ async function sbFetch(path, opts = {}) {
   return res.json();
 }
 
-/**
- * Returns all active categories sorted by sort_order.
- */
+// Build Supabase query string without encoding filter operators
+function buildQuery(table, filters, extra = '') {
+  const parts = Object.entries(filters).map(([k, v]) => `${k}=${v}`);
+  return `${table}?${parts.join('&')}${extra ? '&' + extra : ''}`;
+}
+
 window.fetchCategories = async function() {
   return sbFetch('categories?select=id,name,description&active=eq.true&order=sort_order.asc');
 };
 
-/**
- * Fetches curated questions for the given categories and level.
- * Returns [] if Supabase is unreachable.
- */
 /**
  * Fetches curated questions for the given categories, level, and optionally company.
  * Prioritises company-specific questions, then fills remaining slots with generic ones.
  * Returns [] if Supabase is unreachable.
  */
 window.fetchQuestions = async function(categories, level, limit, company) {
-  limit = limit || 5;
+  limit = limit || 3;
   try {
     const catFilter = categories.map(c => `"${c}"`).join(',');
-    const baseParams = {
+    const base = {
       select:   'id,question,category,context,framework,company',
       active:   'eq.true',
-      level:    `in.(${[level, 'Any'].join(',')})`,
+      level:    `in.(${level},Any)`,
       category: `in.(${catFilter})`,
     };
 
     let results = [];
 
-    // 1 — Company-specific questions first (if company provided)
-    if (company) {
-      const companyParams = new URLSearchParams({
-        ...baseParams,
-        company: `eq.${company}`,
-        limit:   String(limit),
-      });
-      results = await sbFetch(`questions?${companyParams}`);
+    // 1 — Company-specific questions (skip if "Other" or empty)
+    if (company && company !== 'Other') {
+      const path = buildQuery('questions', { ...base, company: `eq.${company}` }, `limit=${limit}`);
+      console.log('[DEBUG] Supabase company query:', `${SUPABASE_URL}/rest/v1/${path}`);
+      results = await sbFetch(path);
+      console.log('[DEBUG] company results:', results);
     }
 
-    // 2 — Fill remaining slots with generic (no company) questions
+    // 2 — Fill remaining slots with generic questions (null company)
     const remaining = limit - results.length;
     if (remaining > 0) {
-      const genericParams = new URLSearchParams({
-        ...baseParams,
-        company: 'is.null',
-        limit:   String(remaining),
-      });
-      const generic = await sbFetch(`questions?${genericParams}`);
+      const path = buildQuery('questions', { ...base, company: 'is.null' }, `limit=${remaining}`);
+      const generic = await sbFetch(path);
       results = [...results, ...generic];
     }
 
@@ -87,9 +76,7 @@ window.fetchQuestions = async function(categories, level, limit, company) {
  */
 window.fetchSystemPrompt = async function() {
   try {
-    const rows = await sbFetch(
-      'knowledge_bases?select=content&active=eq.true&order=sort_order.asc'
-    );
+    const rows = await sbFetch('knowledge_bases?select=content&active=eq.true&order=sort_order.asc');
     return rows.map(r => r.content).join('\n\n');
   } catch (e) {
     console.warn('Supabase knowledge base fetch failed, using bundled prompt:', e.message);

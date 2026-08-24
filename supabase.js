@@ -39,29 +39,36 @@ window.fetchQuestions = async function(categories, level, limit, company) {
   console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
     // Build query params as a plain string — Supabase REST needs unencoded filter operators
-    const catList = categories.join(',');
-    const levelList = `${level},Any`;
+    // Use individual eq params for each category — avoids in.() space/encoding issues
+    const catParams = categories.map(c => `category=eq.${encodeURIComponent(c)}`).join('&');
+    const levelParam = `level=in.(${encodeURIComponent(level)},Any)`;
 
     async function queryQuestions(companyFilter, rowLimit) {
-      const params = [
-        'select=id,question,category,context,framework,company',
-        'active=eq.true',
-        `level=in.(${levelList})`,
-        `category=in.(${catList})`,
-        companyFilter,
-        `limit=${rowLimit}`,
-      ].join('&');
-      const url = `${SUPABASE_URL}/rest/v1/questions?${params}`;
-      console.log('[DEBUG] fetch url:', url);
-      const res = await fetch(url, {
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Accept': 'application/json',
-        },
-      });
-      if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
-      return res.json();
+      // Fetch each category separately and merge — sidesteps in.() multi-value encoding
+      const allResults = [];
+      const perCat = Math.ceil(rowLimit / categories.length);
+      for (const cat of categories) {
+        if (allResults.length >= rowLimit) break;
+        const params = new URLSearchParams({
+          select: 'id,question,category,context,framework,company',
+          active: 'eq.true',
+          category: `eq.${cat}`,
+          limit: String(perCat),
+        });
+        // Add level and company as raw strings (PostgREST operators)
+        const url = `${SUPABASE_URL}/rest/v1/questions?${params}&level=in.(${encodeURIComponent(level)},Any)&${companyFilter}`;
+        const res = await fetch(url, {
+          headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Accept': 'application/json',
+          },
+        });
+        if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+        const rows = await res.json();
+        allResults.push(...rows);
+      }
+      return allResults.slice(0, rowLimit);
     }
 
     let results = [];

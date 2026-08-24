@@ -38,25 +38,38 @@ window.fetchQuestions = async function(categories, level, limit, company) {
   limit = limit || 3;
   console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
-    // Build category filter as individual eq conditions joined with or()
-    const catOr = categories.map(c => `category.eq.${c}`).join(',');
-    const levelOr = `level.eq.${level},level.eq.Any`;
-    const base = {
-      select: 'id,question,category,context,framework,company',
-      active: 'eq.true',
-      or:     `(${levelOr})`,
-    };
-    const catParam = `or=(${catOr})`;
-    console.log('[DEBUG] catOr:', catOr, 'levelOr:', levelOr);
+    // Build query params as a plain string — Supabase REST needs unencoded filter operators
+    const catList = categories.map(c => `"${c}"`).join(',');
+    const levelList = `"${level}","Any"`;
+
+    async function queryQuestions(companyFilter, rowLimit) {
+      const params = [
+        'select=id,question,category,context,framework,company',
+        'active=eq.true',
+        `level=in.(${levelList})`,
+        `category=in.(${catList})`,
+        companyFilter,
+        `limit=${rowLimit}`,
+      ].join('&');
+      const url = `${SUPABASE_URL}/rest/v1/questions?${params}`;
+      console.log('[DEBUG] fetch url:', url);
+      const res = await fetch(url, {
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Accept': 'application/json',
+        },
+      });
+      if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+      return res.json();
+    }
 
     let results = [];
 
     // 1 — Company-specific questions (skip if "Other" or empty)
     if (company && company !== 'Other') {
-      const path = buildQuery('questions', { ...base, company: `eq.${company}` }, `${catParam}&limit=${limit}`);
-      console.log('[DEBUG] Supabase company path:', path);
       try {
-        results = await sbFetch(path);
+        results = await queryQuestions(`company=eq.${company}`, limit);
         console.log('[DEBUG] company results:', results);
       } catch(err) {
         console.log('[DEBUG] company fetch error:', err.message);
@@ -66,10 +79,8 @@ window.fetchQuestions = async function(categories, level, limit, company) {
     // 2 — Fill remaining slots with generic questions (null company)
     const remaining = limit - results.length;
     if (remaining > 0) {
-      const path = buildQuery('questions', { ...base, company: 'is.null' }, `${catParam}&limit=${remaining}`);
-      console.log('[DEBUG] Supabase generic path:', path);
       try {
-        const generic = await sbFetch(path);
+        const generic = await queryQuestions('company=is.null', remaining);
         console.log('[DEBUG] generic results:', generic);
         results = [...results, ...generic];
       } catch(err) {

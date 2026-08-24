@@ -224,7 +224,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Company</label>
-          <input class="form-input" id="inp-company" placeholder="e.g. Google, Amazon…" oninput="checkSetup()">
+          <select class="form-select" id="inp-company" onchange="checkSetup()">
+            <option value="">Select company…</option>
+            <option value="Google">Google</option>
+            <option value="Amazon">Amazon</option>
+            <option value="Meta">Meta</option>
+            <option value="DoorDash">DoorDash</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label">Role title</label>
@@ -237,11 +244,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
           <label class="form-label">Level</label>
           <select class="form-select" id="inp-level" onchange="checkSetup()">
             <option value="">Level…</option>
-            <option>Senior Manager</option>
-            <option>Manager of Managers</option>
-            <option>Director</option>
-            <option>Senior Director</option>
-            <option>VP / Head of</option>
+            <option value="Senior Manager">Senior Manager</option>
+            <option value="Senior Manager">Manager of Managers</option>
+            <option value="Director">Director</option>
+            <option value="Director">Senior Director</option>
+            <option value="VP">VP / Head of</option>
           </select>
         </div>
         <div class="form-group">
@@ -275,12 +282,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
       <div class="form-group">
         <label class="form-label">Focus areas <span class="opt">(pick 1–3)</span></label>
         <div class="category-grid">
-          <div class="cat-chip" data-cat="Leadership &amp; org design" onclick="toggleCat(this)">Leadership</div>
-          <div class="cat-chip" data-cat="Strategy &amp; stakeholders" onclick="toggleCat(this)">Strategy</div>
-          <div class="cat-chip" data-cat="Data &amp; analytics" onclick="toggleCat(this)">Analytics</div>
-          <div class="cat-chip" data-cat="Product thinking" onclick="toggleCat(this)">Product</div>
-          <div class="cat-chip" data-cat="Trust &amp; Safety" onclick="toggleCat(this)">Trust &amp; Safety</div>
+          <div class="cat-chip" data-cat="Leadership & org design" onclick="toggleCat(this)">Leadership</div>
+          <div class="cat-chip" data-cat="Strategy & stakeholders" onclick="toggleCat(this)">Strategy</div>
+          <div class="cat-chip" data-cat="Data & analytics strategy" onclick="toggleCat(this)">Analytics</div>
+          <div class="cat-chip" data-cat="Product & cross-functional" onclick="toggleCat(this)">Product</div>
+          <div class="cat-chip" data-cat="Metrics & experimentation" onclick="toggleCat(this)">Metrics</div>
           <div class="cat-chip" data-cat="Behavioral / STAR" onclick="toggleCat(this)">Behavioral</div>
+          <div class="cat-chip" data-cat="Technical & execution" onclick="toggleCat(this)">Technical</div>
         </div>
       </div>
 
@@ -506,15 +514,26 @@ function selectMode(m){
 }
 
 async function confirmMode(){
-  if(S.mode==='guided'){
-    S.timeline = parseInt(document.getElementById('inp-timeline').value);
-    S.daily    = parseInt(document.getElementById('inp-daily').value);
-    buildPlan();
-    show('screen-plan');
-    updateSidebarSession();
-  } else {
-    updateSidebarSession();
-    await startInterview();
+  const btn = document.getElementById('mode-next-btn');
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+  try {
+    if(S.mode==='guided'){
+      S.timeline = parseInt(document.getElementById('inp-timeline').value) || 2;
+      S.daily    = parseInt(document.getElementById('inp-daily').value) || 30;
+      buildPlan();
+      show('screen-plan');
+      updateSidebarSession();
+    } else {
+      await startInterview();
+      updateSidebarSession();
+    }
+  } catch(e) {
+    console.error('confirmMode error:', e);
+    alert('Something went wrong loading your session. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
   }
 }
 
@@ -601,8 +620,7 @@ function renderPlanTimeline(){
     wDiv.innerHTML = `<div class="week-label">Week ${w}</div>`;
     const daysThisWeek = S.plan.filter(p => p.day > (w-1)*5 && p.day <= w*5);
     daysThisWeek.forEach(dayObj => {
-      const dayNames = ['Mon','Tue','Wed','Thu','Fri'];
-      const dayName = dayNames[(dayObj.day-1) % 5];
+      const dayName = `Day ${dayObj.day}`;
       const row = document.createElement('div');
       row.className = 'day-row';
       row.innerHTML = `<div class="day-label">${dayName}</div><div class="day-tasks" id="day-${dayObj.day}"></div>`;
@@ -738,8 +756,10 @@ async function startInterview(){
 }
 
 async function generateQuestions(){
+  console.log('[DEBUG] generateQuestions called', {categories: S.categories, level: S.level, qCount: S.qCount, company: S.company});
   // 1 — Try curated Supabase bank first
   const curated = await fetchQuestions(S.categories, S.level, S.qCount, S.company);
+  console.log('[DEBUG] curated questions from Supabase:', curated);
   S.questions = curated.slice(0, S.qCount);
 
   // 2 — If the bank didn't have enough, fill the rest with Claude
@@ -936,7 +956,7 @@ function show(id){
 
 function resetAll(){
   S={company:'',role:'',level:'',fn:'',interviewer:'',categories:[],qCount:3,mode:'',timeline:2,daily:30,questions:[],currentIndex:0,answered:[],plan:[],planDay:0,planTaskIndex:0,fromPlan:false};
-  document.getElementById('inp-company').value='';
+  document.getElementById('inp-company').selectedIndex=0;
   document.getElementById('inp-role').value='';
   document.getElementById('inp-level').value='';
   document.getElementById('inp-function').value='';

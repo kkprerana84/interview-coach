@@ -36,8 +36,10 @@ window.fetchCategories = async function() {
  */
 window.fetchQuestions = async function(categories, level, limit, company) {
   limit = limit || 3;
+  console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
     const catFilter = categories.map(c => `"${c}"`).join(',');
+    console.log('[DEBUG] catFilter:', catFilter);
     const base = {
       select:   'id,question,category,context,framework,company',
       active:   'eq.true',
@@ -75,7 +77,7 @@ window.fetchQuestions = async function(categories, level, limit, company) {
 
     return results;
   } catch (e) {
-    console.warn('Supabase question fetch failed, will use AI-generated:', e.message);
+    console.warn('[DEBUG] Supabase question fetch outer catch:', e.message, e);
     return [];
   }
 };

@@ -1,5 +1,5 @@
 const SUPABASE_URL  = 'https://jillixkvzzxfgctvryrw.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_Qwdosc14AL5K-viSPPwQwg_57lF-yOu';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppbGxpeGt2enp4ZmdjdHZyeXJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjk5MjQsImV4cCI6MjA5NjcwNTkyNH0.UsoE9qCzkKe4yYC8pLYbwN-FzvT7uv_sTD3wJC45g_8';
 
 async function sbFetch(path, opts = {}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {

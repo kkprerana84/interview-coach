@@ -38,12 +38,12 @@ window.fetchQuestions = async function(categories, level, limit, company) {
   limit = limit || 3;
   console.log('[DEBUG] fetchQuestions entered', {categories, level, limit, company});
   try {
-    const catFilter = categories.map(c => `"${c}"`).join(',');
+    const catFilter = categories.map(c => `"${c.replace(/&/g, '%26')}"`).join(',');
     console.log('[DEBUG] catFilter:', catFilter);
     const base = {
       select:   'id,question,category,context,framework,company',
       active:   'eq.true',
-      level:    `in.(${level},Any)`,
+      level:    `in.(${encodeURIComponent(level)},Any)`,
       category: `in.(${catFilter})`,
     };
 
